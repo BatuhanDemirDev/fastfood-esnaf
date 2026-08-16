@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sokak Ustası — Esnaf Usulü Fast Food</title>
+<meta name="description" content="Sokak Ustası: taze malzemeler, ustaca hazırlanan döner, patates, pizza, burger ve daha fazlası. Esnaf usulü, gözünüzün önünde.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<canvas id="smoke-canvas" aria-hidden="true"></canvas>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="icon-chili" viewBox="0 0 24 24">
+    <path d="M9 4c1.2-1.6 3-2.4 4.6-2 .4.1.5.6.2.9-.8.8-1.1 1.6-1 2.4" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M9.5 6.2c4-1.4 8 .6 8.8 4.8.7 3.8-1.6 8.6-5.4 10.6-2.6 1.4-5-.1-5.6-2.6-.9-3.6.6-11.3 2.2-12.8Z" fill="var(--red)" stroke="var(--ink)" stroke-width="1.4" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<a class="skip-link" href="#ana-icerik">İçeriğe geç</a>
+
+<header class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a href="#hero" class="logo" aria-label="Sokak Ustası anasayfa">
+      <svg viewBox="0 0 60 60" class="logo-mark" aria-hidden="true">
+        <line x1="10" y1="50" x2="50" y2="10" stroke="var(--steel)" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="21" cy="39" r="7" fill="var(--red)"/>
+        <circle cx="30" cy="30" r="7" fill="var(--mustard)"/>
+        <circle cx="39" cy="21" r="7" fill="var(--green)"/>
+      </svg>
+      <span class="logo-text">SOKAK<em>USTASI</em></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#hero" data-nav>Anasayfa</a>
+      <a href="#lezzetler" data-nav>Lezzetlerimiz</a>
+      <a href="#menu" data-nav>Menü</a>
+      <a href="#iletisim" data-nav>İletişim</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="icon-btn" aria-label="Açık/koyu tema değiştir" type="button">
+        <svg viewBox="0 0 24 24" class="icon-sun" aria-hidden="true"><circle cx="12" cy="12" r="5"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1.5" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22.5" y2="12"/><line x1="4.4" y1="4.4" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19.6" y2="19.6"/><line x1="4.4" y1="19.6" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="19.6" y2="4.4"/></g></svg>
+        <svg viewBox="0 0 24 24" class="icon-moon" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+      <a href="tel:+905555550101" class="btn btn-cta">Sipariş Ver</a>
+      <button id="menuToggle" class="icon-btn nav-burger" aria-label="Menüyü aç" aria-expanded="false" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="ana-icerik">
+
+  <!-- ============ HERO ============ -->
+  <section id="hero" class="hero assemble-section" data-scroll-length="1500">
+    <div class="hero-bg-decor" aria-hidden="true">
+      <svg viewBox="0 0 1200 800" class="steam-svg" preserveAspectRatio="none">
+        <path class="steam s1" d="M120 700 C 100 600, 150 560, 120 480 C 95 420, 145 380, 120 300" fill="none" stroke="var(--text)" stroke-width="10" stroke-linecap="round" opacity="0.06"/>
+        <path class="steam s2" d="M1080 680 C 1100 590, 1050 550, 1080 470 C 1105 410, 1055 370, 1080 290" fill="none" stroke="var(--text)" stroke-width="10" stroke-linecap="round" opacity="0.05"/>
+        <path class="steam s3" d="M980 740 C 1000 660, 960 630, 985 560" fill="none" stroke="var(--text)" stroke-width="7" stroke-linecap="round" opacity="0.05"/>
+      </svg>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-content">
+        <p class="eyebrow">ESNAF USULÜ · SOKAĞIN LEZZETİ</p>
+        <h1 class="display-xl">TAM KIVAMINDA,<br><span class="accent-text">SIKI SIKIYA</span><br>SARILI.</h1>
+        <p class="hero-sub">Malzemeler, garnitürler ve soslar gözünüzün önünde bir araya geliyor. Aşağı kaydırın, lezzet toparlansın.</p>
+        <div class="hero-actions">
+          <a href="#menu" class="btn btn-primary">Menüyü Gör</a>
+          <a href="#lezzetler" class="btn btn-ghost">Nasıl Hazırlanır?</a>
+        </div>
+        <div class="stamp-badge" id="stampBadge" aria-hidden="true">
+          <svg viewBox="0 0 160 160"><g id="stampPath"></g>
+            <text x="80" y="72" text-anchor="middle" class="stamp-text-top">USTA ELİNDEN</text>
+            <text x="80" y="95" text-anchor="middle" class="stamp-text-bottom">ESNAF LEZZETİ</text>
+          </svg>
+        </div>
+        <p class="scroll-cue">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          KAYDIR
+        </p>
+      </div>
+
+      <div class="hero-illustration">
+        <svg viewBox="0 0 1200 800" id="heroSvg" class="assemble-svg" aria-label="Malzemeleri sıkıca sarılmış bir dürüm illüstrasyonu">
+          <!-- bottom bread -->
+          <g class="piece" data-from-y="520" data-from-rot="6" data-pos="0" data-origin="50% 100%">
+            <path d="M420 640 Q600 700 780 640 L780 610 Q600 660 420 610 Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <!-- onions -->
+          <g class="piece" data-from-x="-480" data-from-rot="-30" data-pos="0.08">
+            <ellipse cx="470" cy="560" rx="55" ry="14" fill="#F4E9D8" stroke="var(--ink)" stroke-width="3" transform="rotate(-8 470 560)"/>
+            <ellipse cx="540" cy="575" rx="50" ry="12" fill="#F4E9D8" stroke="var(--ink)" stroke-width="3" transform="rotate(6 540 575)"/>
+          </g>
+          <!-- meat -->
+          <g class="piece" data-from-x="620" data-from-y="-80" data-from-rot="35" data-pos="0.14">
+            <path d="M440 600 Q470 540 540 550 Q620 530 680 570 Q730 590 700 610 Q620 640 520 625 Q460 630 440 600Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <!-- tomato slices -->
+          <g class="piece" data-from-y="-460" data-from-rot="-60" data-pos="0.22" data-origin="center">
+            <circle cx="510" cy="560" r="34" fill="var(--red)" stroke="var(--ink)" stroke-width="4"/>
+            <circle cx="504" cy="554" r="3.5" fill="#F4E9D8"/><circle cx="520" cy="562" r="3.5" fill="#F4E9D8"/><circle cx="512" cy="572" r="3.5" fill="#F4E9D8"/>
+          </g>
+          <g class="piece" data-from-y="-500" data-from-rot="80" data-pos="0.27" data-origin="center">
+            <circle cx="640" cy="555" r="30" fill="var(--red)" stroke="var(--ink)" stroke-width="4"/>
+            <circle cx="634" cy="549" r="3" fill="#F4E9D8"/><circle cx="648" cy="558" r="3" fill="#F4E9D8"/>
+          </g>
+          <!-- lettuce -->
+          <g class="piece" data-from-x="-560" data-from-y="140" data-from-rot="-50" data-pos="0.34">
+            <polygon points="400,600 420,560 440,600 455,555 475,605 495,558 520,608 500,625 420,628" fill="var(--green)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+          <g class="piece" data-from-x="600" data-from-y="120" data-from-rot="60" data-pos="0.36">
+            <polygon points="700,610 715,565 735,608 752,562 775,612 760,628 700,628" fill="var(--green-dark)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+          <!-- sauce drizzle (draw-on) -->
+          <path class="piece" data-type="draw" data-pos="0.55" d="M440 545 Q470 520 500 545 Q530 520 560 545 Q590 520 620 545 Q650 520 680 545" fill="none" stroke="#FBF6EA" stroke-width="7" stroke-linecap="round"/>
+          <!-- top bread -->
+          <g class="piece" data-from-y="-560" data-from-rot="-10" data-pos="0.62" data-origin="50% 0%">
+            <path d="M420 540 Q440 460 600 450 Q760 460 780 540 Q600 580 420 540Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <!-- particles injected by JS: pepper flakes + herb specks -->
+          <g id="heroParticles"></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ITEMS INTRO ============ -->
+  <section id="lezzetler" class="items-intro">
+    <h2 class="section-title">Nasıl hazırlanıyor, <span class="accent-text">izleyin.</span></h2>
+    <p>Her ürünümüzün kendine has bir hazırlanış anı var. Aşağı kaydırdıkça malzemeler kendi yerine oturuyor.</p>
+  </section>
+
+  <!-- ============ PATATES ============ -->
+  <section id="patates" class="item-section assemble-section" data-scroll-length="1700">
+    <div class="item-inner">
+      <div class="item-text">
+        <span class="item-num">01</span>
+        <h2 class="display-lg">ÇITIR ÇITIR<br><span class="accent-text">PATATES</span></h2>
+        <p>Tuzu tam kıvamında, kutusuna sıcacık dolduruluyor. Her lokma çıtır, her kutu dolu.</p>
+        <span class="fun-chip piece" data-from-y="60" data-pos="0.92">150gr · Taze Kesim</span>
+      </div>
+      <div class="item-illustration">
+        <svg viewBox="0 0 800 800" id="friesSvg" class="assemble-svg" aria-label="Tuzlanan ve kutusuna dolan patates illüstrasyonu">
+          <defs>
+            <pattern id="boxStripe" width="34" height="34" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+              <rect width="34" height="34" fill="var(--kraft)"/>
+              <rect width="17" height="34" fill="var(--red)"/>
+            </pattern>
+          </defs>
+          <!-- box back -->
+          <path d="M270 780 L250 460 L550 460 L530 780 Z" fill="url(#boxStripe)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          <!-- salt shaker -->
+          <g class="piece" data-to-rot="34" data-duration="0.22" data-pos="0.02" id="shaker" data-origin="50% 92%">
+            <rect x="345" y="90" width="90" height="150" rx="18" fill="#EFE7D6" stroke="var(--ink)" stroke-width="5"/>
+            <rect x="358" y="65" width="64" height="35" rx="10" fill="var(--steel)" stroke="var(--ink)" stroke-width="4"/>
+            <circle cx="378" cy="80" r="3" fill="var(--ink)"/><circle cx="392" cy="80" r="3" fill="var(--ink)"/><circle cx="406" cy="80" r="3" fill="var(--ink)"/>
+          </g>
+          <g id="saltParticles"></g>
+          <!-- fries -->
+          <g class="piece" data-from-x="-520" data-from-y="-120" data-from-rot="-70" data-pos="0.42" data-origin="50% 100%">
+            <rect x="300" y="330" width="34" height="240" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-8 317 570)"/>
+          </g>
+          <g class="piece" data-from-x="480" data-from-y="-160" data-from-rot="80" data-pos="0.47" data-origin="50% 100%">
+            <rect x="345" y="300" width="34" height="270" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(4 362 570)"/>
+          </g>
+          <g class="piece" data-from-x="-560" data-from-y="80" data-from-rot="-90" data-pos="0.51" data-origin="50% 100%">
+            <rect x="392" y="320" width="34" height="250" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-3 409 570)"/>
+          </g>
+          <g class="piece" data-from-x="540" data-from-y="60" data-from-rot="90" data-pos="0.55" data-origin="50% 100%">
+            <rect x="438" y="335" width="34" height="235" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(9 455 570)"/>
+          </g>
+          <g class="piece" data-from-x="-500" data-from-y="-60" data-from-rot="-60" data-pos="0.59" data-origin="50% 100%">
+            <rect x="248" y="345" width="30" height="225" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-16 263 570)"/>
+          </g>
+          <g class="piece" data-from-x="500" data-from-y="-40" data-from-rot="60" data-pos="0.63" data-origin="50% 100%">
+            <rect x="485" y="340" width="30" height="230" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(15 500 570)"/>
+          </g>
+          <!-- box front flap -->
+          <g class="piece" data-type="flap" data-from-rot="-75" data-pos="0.8" data-origin="50% 100%">
+            <path d="M258 780 L245 470 L555 470 L542 780 Z" fill="url(#boxStripe)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+            <text x="400" y="720" text-anchor="middle" class="box-label">SOKAK USTASI</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DÖNER ============ -->
+  <section id="doner" class="item-section assemble-section reverse" data-scroll-length="1800">
+    <div class="item-inner">
+      <div class="item-illustration">
+        <svg viewBox="0 0 600 900" id="donerSvg" class="assemble-svg" aria-label="Dönen ve dilimlenen döner illüstrasyonu">
+          <!-- flame flecks -->
+          <g class="flame-flecks" aria-hidden="true">
+            <path d="M240 830 q10 -30 -6 -46 q22 6 20 -20 q18 14 10 40 q16 -8 8 -28 q20 20 8 54Z" fill="var(--red)"/>
+            <path d="M330 830 q8 -24 -8 -38 q18 4 16 -18 q16 12 6 34 q14 -6 6 -22 q18 16 8 44Z" fill="var(--mustard)"/>
+            <path d="M390 830 q9 -26 -7 -40 q19 5 17 -19 q17 13 7 36 q15 -7 7 -24 q19 17 9 47Z" fill="var(--red)"/>
+          </g>
+          <!-- spit -->
+          <rect x="292" y="40" width="16" height="720" fill="var(--steel)" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="284,40 316,40 300,10" fill="var(--steel)" stroke="var(--ink)" stroke-width="3"/>
+          <!-- meat cone -->
+          <g id="meatCone">
+            <ellipse cx="300" cy="120" rx="55" ry="26" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="175" rx="95" ry="34" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="235" rx="125" ry="38" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="300" rx="140" ry="40" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="365" rx="148" ry="42" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="430" rx="140" ry="40" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="493" rx="120" ry="38" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="550" rx="90" ry="32" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse cx="300" cy="598" rx="55" ry="24" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
+            <ellipse id="coneShine" cx="260" cy="350" rx="30" ry="220" fill="#FFFFFF" opacity="0.16"/>
+          </g>
+          <!-- knife -->
+          <g class="piece" data-from-y="560" data-pos="0.08" data-duration="0.62" id="donerKnife" data-origin="50% 50%">
+            <rect x="415" y="230" width="150" height="16" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="3" transform="rotate(-14 490 238)"/>
+            <rect x="540" y="220" width="34" height="34" rx="6" fill="var(--ink-soft)" transform="rotate(-14 557 237)"/>
+          </g>
+          <!-- shavings -->
+          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.15" data-to-x="120" data-to-y="360" data-to-rot="120">
+            <path d="M300 235 q30 6 22 30 q-4 20 -26 14 q-18 -6 -14 -26 q4 -16 18 -18Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          </g>
+          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.25" data-to-x="-80" data-to-y="400" data-to-rot="-100">
+            <path d="M300 300 q28 8 18 28 q-6 18 -24 12 q-16 -6 -12 -24 q4 -14 18 -16Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+          </g>
+          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.35" data-to-x="150" data-to-y="420" data-to-rot="150">
+            <path d="M300 365 q30 6 20 30 q-6 18 -26 12 q-16 -6 -12 -24 q4 -14 18 -18Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          </g>
+          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.45" data-to-x="-140" data-to-y="440" data-to-rot="-140">
+            <path d="M300 430 q26 8 16 26 q-6 18 -24 12 q-14 -6 -10 -22 q4 -14 18 -16Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+          </g>
+          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.55" data-to-x="60" data-to-y="460" data-to-rot="90">
+            <path d="M300 493 q24 8 16 24 q-6 16 -22 10 q-14 -6 -10 -20 q4 -12 16 -14Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          </g>
+          <!-- plate + wrap catching shavings -->
+          <g class="piece" data-from-y="180" data-pos="0.5" data-origin="50% 100%">
+            <ellipse cx="300" cy="800" rx="150" ry="30" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="4"/>
+            <path d="M210 790 Q300 830 390 790 Q300 810 210 790Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+          </g>
+          <g id="doneCounter" class="fun-chip-svg">
+            <text x="300" y="70" text-anchor="middle" class="doner-counter-text">DÖNÜYOR…</text>
+          </g>
+        </svg>
+      </div>
+      <div class="item-text">
+        <span class="item-num">02</span>
+        <h2 class="display-lg">DÖNEN<br><span class="accent-text">LEZZET</span></h2>
+        <p>Usta bıçağı ne zaman indirirse, o an ince ince dilimleniyor. Sıcağı sıcağına, taze taze.</p>
+        <span class="fun-chip piece" data-from-y="60" data-pos="0.9">Günlük Taze Et</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PIZZA ============ -->
+  <section id="pizza" class="item-section assemble-section" data-scroll-length="1700">
+    <div class="item-inner">
+      <div class="item-text">
+        <span class="item-num">03</span>
+        <h2 class="display-lg">DÖNE DÖNE<br><span class="accent-text">PİZZA</span></h2>
+        <p>Hamur havada döner, malzemeler tam üstüne iner. Fırından çıkar çıkmaz karşınızda.</p>
+        <span class="fun-chip piece" data-from-y="60" data-pos="0.94">Odun Ateşi Lezzeti</span>
+      </div>
+      <div class="item-illustration">
+        <svg viewBox="0 0 800 800" id="pizzaSvg" class="assemble-svg" aria-label="Dönerek hazırlanan pizza illüstrasyonu">
+          <g id="pizzaGroup" class="piece" data-from-rot="-820" data-from-scale="0.32" data-pos="0" data-origin="50% 50%">
+            <circle cx="400" cy="400" r="290" fill="var(--kraft)" stroke="var(--ink)" stroke-width="8"/>
+            <circle cx="400" cy="400" r="290" fill="none" stroke="var(--kraft-dark)" stroke-width="18" stroke-dasharray="4 14"/>
+            <circle class="piece" data-from-scale="0" data-pos="0.22" data-origin="50% 50%" cx="400" cy="400" r="240" fill="var(--red)"/>
+            <circle class="piece" data-from-scale="0" data-pos="0.3" data-origin="50% 50%" cx="400" cy="400" r="210" fill="var(--mustard-light)" opacity="0.92"/>
+            <g id="cheeseBlobs"></g>
+            <g id="pepperoni"></g>
+            <g id="pizzaHerbs"></g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BURGER ============ -->
+  <section id="burger" class="item-section assemble-section reverse" data-scroll-length="1700">
+    <div class="item-inner">
+      <div class="item-illustration">
+        <svg viewBox="0 0 700 900" id="burgerSvg" class="assemble-svg" aria-label="Katman katman istiflenen burger illüstrasyonu">
+          <!-- bottom bun -->
+          <g class="piece" data-from-y="480" data-pos="0" data-origin="50% 100%">
+            <path d="M180 780 Q350 810 520 780 L520 730 Q350 755 180 730 Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <!-- lettuce -->
+          <g class="piece" data-from-x="-540" data-from-rot="-30" data-pos="0.1" data-origin="50% 100%">
+            <polygon points="165,735 190,700 210,738 235,695 260,740 285,698 310,738 300,750 175,750" fill="var(--green)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+          <!-- tomato -->
+          <g class="piece" data-from-x="540" data-from-rot="30" data-pos="0.18" data-origin="50% 100%">
+            <ellipse cx="430" cy="712" rx="115" ry="18" fill="var(--red)" stroke="var(--ink)" stroke-width="5"/>
+            <circle cx="390" cy="710" r="3" fill="#F4E9D8"/><circle cx="430" cy="708" r="3" fill="#F4E9D8"/><circle cx="470" cy="712" r="3" fill="#F4E9D8"/>
+          </g>
+          <!-- patty -->
+          <g class="piece" data-from-x="-500" data-from-rot="-25" data-pos="0.28" data-origin="50% 100%">
+            <path d="M175 700 Q350 725 525 700 Q525 665 505 655 Q350 675 195 655 Q175 665 175 700Z" fill="var(--brown)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+            <line x1="220" y1="670" x2="250" y2="690" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+            <line x1="280" y1="665" x2="310" y2="685" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+            <line x1="400" y1="663" x2="430" y2="683" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+          </g>
+          <!-- cheese -->
+          <g class="piece" data-from-y="-460" data-from-rot="14" data-pos="0.38" data-origin="50% 50%">
+            <path d="M195 655 L505 655 L525 615 Q460 640 350 615 Q240 640 175 615 Z" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+          </g>
+          <!-- onion rings -->
+          <g class="piece" data-from-x="520" data-pos="0.46" data-origin="50% 100%">
+            <ellipse cx="270" cy="625" rx="34" ry="10" fill="none" stroke="#E9D9C2" stroke-width="6"/>
+            <ellipse cx="340" cy="620" rx="34" ry="10" fill="none" stroke="#E9D9C2" stroke-width="6"/>
+          </g>
+          <!-- pickles -->
+          <g id="pickleParticles"></g>
+          <!-- top bun -->
+          <g class="piece" data-from-y="-620" data-pos="0.6" data-origin="50% 0%">
+            <path d="M175 610 Q195 480 350 468 Q505 480 525 610 Q350 640 175 610Z" fill="var(--kraft-light)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <g id="sesameParticles"></g>
+        </svg>
+      </div>
+      <div class="item-text">
+        <span class="item-num">04</span>
+        <h2 class="display-lg">KAT KAT<br><span class="accent-text">DOYURUCU</span></h2>
+        <p>Her katman özenle üst üste konur. Son dokunuş susamlı ekmekle tamamlanır.</p>
+        <span class="fun-chip piece" data-from-y="60" data-pos="0.92">6 Katlı Doyum</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ KOLA ============ -->
+  <section id="kola" class="item-section assemble-section" data-scroll-length="1600">
+    <div class="item-inner">
+      <div class="item-text">
+        <span class="item-num">05</span>
+        <h2 class="display-lg">SERİNLETEN<br><span class="accent-text">YUDUM</span></h2>
+        <p>Buzu, köpüğü ve o tanıdık ferahlığıyla; her siparişin yanında hazır.</p>
+        <span class="fun-chip piece" data-from-y="60" data-pos="0.94">Buz Gibi Servis</span>
+      </div>
+      <div class="item-illustration">
+        <svg viewBox="0 0 500 900" id="kolaSvg" class="assemble-svg" aria-label="Buz ve pipetiyle hazırlanan içecek illüstrasyonu">
+          <defs>
+            <clipPath id="cupClip">
+              <path d="M165 250 L335 250 L305 760 Q250 780 195 760 Z"/>
+            </clipPath>
+          </defs>
+          <g class="piece" data-from-y="380" data-pos="0" data-origin="50% 100%">
+            <path d="M165 250 L335 250 L305 760 Q250 780 195 760 Z" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+          </g>
+          <rect id="kolaFill" x="150" y="760" width="200" height="0" fill="var(--red)" clip-path="url(#cupClip)"/>
+          <g id="bubbleGroup" clip-path="url(#cupClip)"></g>
+          <g id="iceGroup"></g>
+          <path class="piece" data-type="flap" data-from-rot="0" data-pos="0" d="M155 250 L345 250 L335 275 L165 275Z" fill="var(--steel)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+          <!-- straw -->
+          <g class="piece" data-from-x="260" data-from-y="-260" data-from-rot="18" data-pos="0.55" data-origin="50% 100%">
+            <rect x="228" y="120" width="26" height="380" rx="10" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-10 241 500)"/>
+            <rect x="228" y="120" width="26" height="380" rx="10" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 14" opacity="0.5" transform="rotate(-10 241 500)"/>
+          </g>
+          <g id="dropletParticles"></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section id="menu" class="menu-section">
+    <div class="section-head">
+      <h2 class="section-title">MENÜ<span class="accent-text">MÜZ</span></h2>
+      <p>Fiyatlar örnektir, güncel fiyat listesi için işletmemizi arayabilirsiniz.</p>
+    </div>
+
+    <div class="menu-grid">
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <rect x="35" y="55" width="50" height="55" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+          <rect x="38" y="35" width="6" height="45" rx="3" fill="var(--mustard)" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="50" y="25" width="6" height="55" rx="3" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="62" y="30" width="6" height="50" rx="3" fill="var(--mustard)" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="74" y="38" width="6" height="42" rx="3" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="3"/>
+        </svg>
+        <h3>Patates</h3>
+        <p>Taze kesim, tuzu tam kıvamında, çıtır çıtır.</p>
+        <div class="price-row"><span class="price-tag">90 ₺</span><span class="spice" aria-label="Az acılı"><svg class="spice-icon"><use href="#icon-chili"/></svg></span></div>
+      </article>
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <rect x="57" y="15" width="6" height="75" fill="var(--steel)" stroke="var(--ink)" stroke-width="2"/>
+          <ellipse cx="60" cy="35" rx="26" ry="10" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          <ellipse cx="60" cy="52" rx="30" ry="11" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+          <ellipse cx="60" cy="70" rx="26" ry="10" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+        </svg>
+        <h3>Döner (Dürüm)</h3>
+        <p>İnce dilim taze et, sarımsak sos ile.</p>
+        <div class="price-row"><span class="price-tag">140 ₺</span><span class="spice" aria-label="Orta acılı"><svg class="spice-icon"><use href="#icon-chili"/></svg><svg class="spice-icon"><use href="#icon-chili"/></svg></span></div>
+      </article>
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <circle cx="60" cy="60" r="42" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
+          <circle cx="60" cy="60" r="34" fill="var(--red)"/>
+          <circle cx="60" cy="60" r="28" fill="var(--mustard-light)" opacity="0.9"/>
+          <circle cx="48" cy="52" r="6" fill="var(--red-deep)"/>
+          <circle cx="70" cy="66" r="6" fill="var(--red-deep)"/>
+          <circle cx="66" cy="46" r="5" fill="var(--red-deep)"/>
+        </svg>
+        <h3>Pizza</h3>
+        <p>Bol peynirli, taş fırın lezzetinde, dilim dilim.</p>
+        <div class="price-row"><span class="price-tag">180 ₺</span><span class="spice" aria-label="Az acılı"><svg class="spice-icon"><use href="#icon-chili"/></svg></span></div>
+      </article>
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <path d="M30 55 Q60 45 90 55 L90 65 Q60 55 30 65 Z" fill="var(--kraft-light)" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="30" y="65" width="60" height="12" fill="var(--brown)" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="30" y="77" width="60" height="8" fill="var(--green)" stroke="var(--ink)" stroke-width="3"/>
+          <path d="M30 85 Q60 95 90 85 L90 92 Q60 102 30 92 Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+        </svg>
+        <h3>Burger</h3>
+        <p>Izgara köfte, cheddar, taze sebzeler.</p>
+        <div class="price-row"><span class="price-tag">160 ₺</span><span class="spice" aria-label="Az acılı"><svg class="spice-icon"><use href="#icon-chili"/></svg></span></div>
+      </article>
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <path d="M42 30 L78 30 L70 95 Q60 100 50 95 Z" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="4"/>
+          <path d="M46 45 L74 45 L69 88 Q60 92 51 88 Z" fill="var(--red)"/>
+        </svg>
+        <h3>Kola / Ayran</h3>
+        <p>Buz gibi servis, siparişin yanında serinlik.</p>
+        <div class="price-row"><span class="price-tag">40 ₺</span><span class="spice spice-none" aria-label="Acısız">ACISIZ</span></div>
+      </article>
+
+      <article class="menu-card">
+        <svg viewBox="0 0 120 120" class="menu-icon" aria-hidden="true">
+          <path d="M35 40 Q60 25 85 40 L80 90 Q60 100 40 90 Z" fill="var(--kraft-light)" stroke="var(--ink)" stroke-width="4"/>
+          <path d="M42 55 Q60 65 78 55" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="52" cy="70" r="4" fill="var(--green)"/><circle cx="68" cy="72" r="4" fill="var(--green)"/>
+        </svg>
+        <h3>Lahmacun</h3>
+        <p>İnce hamur, bol kıymalı, maydanozuyla.</p>
+        <div class="price-row"><span class="price-tag">55 ₺</span><span class="spice" aria-label="Çok acılı"><svg class="spice-icon"><use href="#icon-chili"/></svg><svg class="spice-icon"><use href="#icon-chili"/></svg><svg class="spice-icon"><use href="#icon-chili"/></svg></span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="iletisim" class="contact-section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2 class="section-title">BİZE <span class="accent-text">ULAŞIN</span></h2>
+        <p class="placeholder-note">Aşağıdaki bilgiler örnek/yer tutucudur — işletme sahibinin gerçek bilgileriyle güncellenmelidir.</p>
+
+        <dl class="info-list">
+          <div class="info-row">
+            <dt>İşletme</dt>
+            <dd>Sokak Ustası Fast Food <span class="ph">[PLACEHOLDER]</span></dd>
+          </div>
+          <div class="info-row">
+            <dt>Adres</dt>
+            <dd>Örnek Mahallesi, Lezzet Sokak No: 12, Kadıköy / İstanbul <span class="ph">[PLACEHOLDER]</span></dd>
+          </div>
+          <div class="info-row">
+            <dt>Telefon</dt>
+            <dd><a href="tel:+905555550101">0 (555) 555 01 01</a> <span class="ph">[PLACEHOLDER]</span></dd>
+          </div>
+          <div class="info-row">
+            <dt>Çalışma Saatleri</dt>
+            <dd>Her gün 10:00 – 02:00 <span class="ph">[PLACEHOLDER]</span></dd>
+          </div>
+        </dl>
+
+        <div class="status-row">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText">Şu an açık olabilir — saatler örnektir</span>
+        </div>
+
+        <div class="contact-actions">
+          <a href="tel:+905555550101" class="btn btn-primary">Bizi Ara</a>
+          <a href="https://wa.me/905555550101" class="btn btn-ghost" target="_blank" rel="noopener">WhatsApp'tan Yaz</a>
+        </div>
+
+        <div class="social-row" aria-label="Sosyal medya bağlantıları (örnek)">
+          <a href="#" aria-label="Instagram (örnek bağlantı)" class="icon-btn">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="X / Twitter (örnek bağlantı)" class="icon-btn">
+            <svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-map" aria-hidden="true">
+        <svg viewBox="0 0 500 500" class="map-svg">
+          <rect x="10" y="10" width="480" height="480" rx="14" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="3"/>
+          <g opacity="0.4" stroke="var(--text-muted)" stroke-width="1.5">
+            <line x1="10" y1="120" x2="490" y2="120"/><line x1="10" y1="230" x2="490" y2="230"/><line x1="10" y1="340" x2="490" y2="340"/>
+            <line x1="140" y1="10" x2="140" y2="490"/><line x1="260" y1="10" x2="260" y2="490"/><line x1="380" y1="10" x2="380" y2="490"/>
+          </g>
+          <path d="M250 150 C 300 150 320 190 300 230 C 285 260 250 320 250 320 C 250 320 215 260 200 230 C 180 190 200 150 250 150Z" fill="var(--red)" stroke="var(--ink)" stroke-width="5"/>
+          <circle cx="250" cy="205" r="26" fill="var(--surface)" stroke="var(--ink)" stroke-width="4"/>
+        </svg>
+        <p class="map-caption">Konum illüstrasyonu örnektir · gerçek harita bağlantısı eklenecek</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="#hero" class="logo footer-logo">
+      <svg viewBox="0 0 60 60" class="logo-mark" aria-hidden="true"><line x1="10" y1="50" x2="50" y2="10" stroke="var(--steel)" stroke-width="4" stroke-linecap="round"/><circle cx="21" cy="39" r="7" fill="var(--red)"/><circle cx="30" cy="30" r="7" fill="var(--mustard)"/><circle cx="39" cy="21" r="7" fill="var(--green)"/></svg>
+      <span class="logo-text">SOKAK<em>USTASI</em></span>
+    </a>
+    <nav class="footer-links">
+      <a href="#hero">Anasayfa</a>
+      <a href="#lezzetler">Lezzetlerimiz</a>
+      <a href="#menu">Menü</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+    <p class="footer-note">© 2026 Sokak Ustası — örnek içeriktir <span class="ph">[PLACEHOLDER]</span>. Tüm görseller CSS/SVG ile çizilmiştir, fotoğraf kullanılmamıştır.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
