@@ -25,6 +25,9 @@
       const next = current === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
       localStorage.setItem('ffe-theme', next);
+      // scene is declared further down but this callback only ever runs on
+      // click, long after the whole module has finished executing once.
+      if (scene && scene.refreshColors) scene.refreshColors();
     });
   })();
 
@@ -165,6 +168,10 @@
     const hasTo = piece.dataset.toX !== undefined || piece.dataset.toY !== undefined || piece.dataset.toRot !== undefined;
 
     if (hasTo) {
+      // Currently only the döner meat shavings use data-to-*: give that
+      // throw a gravity-like accelerating ease so it reads as heavier,
+      // falling meat rather than a generic tween (döner is the flagship
+      // item section — this branch is safe to bias toward it specifically).
       const toX = parseFloat(piece.dataset.toX || 0);
       const toY = parseFloat(piece.dataset.toY || 0);
       const toRot = parseFloat(piece.dataset.toRot || 0);
@@ -172,7 +179,7 @@
       const toOpacity = parseFloat(piece.dataset.toOpacity !== undefined ? piece.dataset.toOpacity : 1);
       tl.fromTo(piece,
         { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 },
-        { x: toX, y: toY, rotate: toRot, scale: toScale, opacity: toOpacity, ease: 'power1.in', duration: dur },
+        { x: toX, y: toY, rotate: toRot, scale: toScale, opacity: toOpacity, ease: 'power2.in', duration: dur },
         pos);
       return;
     }
@@ -193,6 +200,17 @@
     extra = extra || {};
     const pieces = section.querySelectorAll('.piece');
     const scrollLength = parseInt(section.dataset.scrollLength || '1500', 10);
+    // Midground parallax target: the whole illustration wrapper (a level
+    // above individual .piece transforms, giving genuine depth separation
+    // from both the background blobs and the foreground assembly pieces).
+    const illus = section.querySelector('.hero-illustration, .item-illustration');
+    // Headline mask-reveal target (see .text-reveal in styles.css).
+    const headingWrap = section.querySelector('.text-reveal');
+    const heading = headingWrap ? headingWrap.firstElementChild : null;
+    // Cinematic section-to-section wipes (see .section-wipe in styles.css).
+    const wipeIn = section.querySelector('.wipe-in');
+    const wipeOut = section.querySelector('.wipe-out');
+    const parallaxMag = window.innerWidth < 760 ? 10 : 24;
 
     if (REDUCED) {
       pieces.forEach((p) => {
@@ -207,6 +225,9 @@
           gsap.set(p, { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1 });
         }
       });
+      // Headings/wipes are left at their CSS defaults (heading fully
+      // visible, wipe panels opacity:0) — nothing to do here, that default
+      // *is* the correct reduced-motion end state.
       return null;
     }
 
@@ -217,11 +238,45 @@
       scrub: 0.6,
       pin: true,
       anticipatePin: 1,
-      pinSpacing: true
+      pinSpacing: true,
+      onUpdate(self) {
+        if (extra.onUpdate) extra.onUpdate(self);
+        if (illus) {
+          const p = self.progress;
+          gsap.set(illus, {
+            y: (p - 0.5) * -parallaxMag,
+            scale: 1 + Math.sin(Math.PI * p) * 0.016
+          });
+        }
+      }
     };
-    if (extra.onUpdate) stConfig.onUpdate = extra.onUpdate;
 
     const tl = gsap.timeline({ scrollTrigger: stConfig });
+
+    if (heading) {
+      // Deliberately NOT part of the scrubbed pin timeline `tl`: that timeline
+      // only advances once the user scrolls *into* the pin, so at rest
+      // (progress 0 — which is the page's actual load state for the hero,
+      // since it's already pinned at "top top" with nothing scrolled yet)
+      // the heading would stay hidden until the visitor started scrolling.
+      // A separate one-shot ScrollTrigger reveals it as soon as the section
+      // is on screen (immediately, for the hero) and never re-hides it.
+      gsap.set(heading, { yPercent: 105, opacity: 0 });
+      gsap.to(heading, {
+        yPercent: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: section, start: 'top 85%', toggleActions: 'play none none none' }
+      });
+    }
+    if (wipeIn) {
+      gsap.set(wipeIn, { xPercent: 0, opacity: 1 });
+      tl.to(wipeIn, { xPercent: -112, duration: 0.1, ease: 'power2.inOut' }, 0)
+        .set(wipeIn, { opacity: 0 }, 0.1);
+    }
+    if (wipeOut) {
+      gsap.set(wipeOut, { xPercent: 112, opacity: 0 });
+      tl.set(wipeOut, { opacity: 1 }, 0.84)
+        .to(wipeOut, { xPercent: 0, duration: 0.12, ease: 'power2.inOut' }, 0.84);
+    }
 
     pieces.forEach((piece, i) => {
       const pos = piece.dataset.pos !== undefined ? parseFloat(piece.dataset.pos) : i * 0.06;
@@ -230,6 +285,138 @@
 
     return tl;
   }
+
+  /* ---------------------------------------------------------
+     Scroll-driven scene backdrop (.bg-scene blobs)
+     Each item section already scrubs its own ScrollTrigger via
+     initAssembleSection; we piggyback its onUpdate to crossfade a
+     themed glow layer in/out (sin(pi*progress): 0 at the pin's start
+     and end, peak at its middle) and drift every blob at its own
+     --depth on plain page scroll for a cheap parallax layer.
+  --------------------------------------------------------- */
+  const bgScene = document.getElementById('bgScene');
+
+  const scene = (function () {
+    const blobs = {
+      hero: document.querySelector('.bg-blob--hero'),
+      patates: document.querySelector('.bg-blob--patates'),
+      doner: document.querySelector('.bg-blob--doner'),
+      pizza: document.querySelector('.bg-blob--pizza'),
+      burger: document.querySelector('.bg-blob--burger'),
+      kola: document.querySelector('.bg-blob--kola')
+    };
+    const MAX = { hero: 0.16, patates: 0.24, doner: 0.26, pizza: 0.22, burger: 0.22, kola: 0.28 };
+
+    /* -------------------------------------------------------
+       Continuous background morph (charcoal -> mustard-lit ->
+       ember-red -> oven-warm -> grease-kraft -> cool teal).
+       Colors are resolved from the *current* theme's own tokens
+       at runtime (via a hidden probe element + getComputedStyle),
+       never hardcoded — so this is automatically correct in both
+       [data-theme="light"] and the OS-preference dark default,
+       and re-resolves itself on theme toggle (see themeInit above).
+    ------------------------------------------------------- */
+    const order = ['hero', 'patates', 'doner', 'pizza', 'burger', 'kola'];
+    let stops = null;
+    let lastKey = 'hero';
+    let lastProgress = 0;
+
+    function resolveRgb(varName) {
+      const probe = resolveRgb._probe || (resolveRgb._probe = (() => {
+        const el = document.createElement('span');
+        el.style.cssText = 'position:absolute;top:-9999px;left:-9999px;visibility:hidden;pointer-events:none;';
+        document.body.appendChild(el);
+        return el;
+      })());
+      probe.style.color = 'var(' + varName + ')';
+      const rgb = getComputedStyle(probe).color;
+      const m = (rgb.match(/[\d.]+/g) || [0, 0, 0]).map(Number);
+      return { r: m[0] || 0, g: m[1] || 0, b: m[2] || 0 };
+    }
+
+    // Mixes a base token with one or two accent tokens at low weights
+    // (kept subtle so body text on --text stays readable throughout).
+    function mixColors(baseVar, layers) {
+      const base = resolveRgb(baseVar);
+      let totalAmt = 0;
+      layers.forEach((l) => { totalAmt += l[1]; });
+      const baseAmt = Math.max(0, 1 - totalAmt);
+      const out = { r: base.r * baseAmt, g: base.g * baseAmt, b: base.b * baseAmt };
+      layers.forEach((l) => {
+        const c = resolveRgb(l[0]);
+        out.r += c.r * l[1]; out.g += c.g * l[1]; out.b += c.b * l[1];
+      });
+      return out;
+    }
+
+    function computeStops() {
+      stops = {
+        hero: resolveRgb('--bg'),
+        patates: mixColors('--bg', [['--mustard-light', 0.16]]),
+        doner: mixColors('--bg', [['--red-deep', 0.18]]),
+        pizza: mixColors('--bg', [['--red-deep', 0.09], ['--mustard', 0.09]]),
+        burger: mixColors('--bg', [['--kraft-dark', 0.16]]),
+        kola: mixColors('--bg', [['--status-open', 0.18]])
+      };
+    }
+    computeStops();
+
+    function lerpC(c1, c2, t) {
+      return { r: c1.r + (c2.r - c1.r) * t, g: c1.g + (c2.g - c1.g) * t, b: c1.b + (c2.b - c1.b) * t };
+    }
+    function rgbStr(c) {
+      return 'rgb(' + c.r.toFixed(0) + ', ' + c.g.toFixed(0) + ', ' + c.b.toFixed(0) + ')';
+    }
+
+    // Each pinned section morphs FROM its own stop TO the next item's stop
+    // across its own local progress (0->1), so the color is exactly
+    // continuous at every pin handoff: end-of-N == start-of-(N+1).
+    function applyBg(key, progress) {
+      if (!bgScene || !stops || !stops[key]) return;
+      const idx = order.indexOf(key);
+      if (idx === -1) return;
+      const toKey = order[idx + 1] || key;
+      const t = Math.min(Math.max(progress, 0), 1);
+      bgScene.style.setProperty('--scene-bg', rgbStr(lerpC(stops[key], stops[toKey], t)));
+    }
+    applyBg('hero', 0);
+
+    function setActive(key, progress) {
+      const p = Math.min(Math.max(progress, 0), 1);
+      const level = Math.sin(Math.PI * p);
+      for (const k in blobs) {
+        if (!blobs[k]) continue;
+        gsap.set(blobs[k], { opacity: k === key ? level * MAX[key] : 0 });
+      }
+      if (blobs.pizza) blobs.pizza.classList.toggle('spinning', key === 'pizza' && p > 0.02 && p < 0.98);
+      lastKey = key; lastProgress = p;
+      applyBg(key, p);
+    }
+
+    if (!REDUCED) {
+      gsap.set(blobs.hero, { opacity: 0.12 });
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          for (const k in blobs) {
+            const el = blobs[k];
+            if (!el) continue;
+            const depth = parseFloat(el.dataset.depth || '0.05');
+            gsap.set(el, { y: -y * depth });
+          }
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+
+    return {
+      setActive,
+      refreshColors() { computeStops(); applyBg(lastKey, lastProgress); }
+    };
+  })();
 
   /* ---------------------------------------------------------
      HERO
@@ -257,7 +444,9 @@
     p2.setAttribute('fill', 'none'); p2.setAttribute('stroke', 'var(--ink)'); p2.setAttribute('stroke-width', '2');
     badgePath.appendChild(p2);
 
-    initAssembleSection(document.getElementById('hero'));
+    initAssembleSection(document.getElementById('hero'), {
+      onUpdate(self) { scene.setActive('hero', self.progress); }
+    });
 
     if (!REDUCED) {
       gsap.to('.steam', {
@@ -276,20 +465,49 @@
       originX: 390, originY: 105, landY: 335, landX: [280, 520], spread: 22,
       color: '#FBF6EA', size: [1.6, 3.2], posStart: 0.24, posEnd: 0.42
     });
-    initAssembleSection(document.getElementById('patates'));
+    initAssembleSection(document.getElementById('patates'), {
+      onUpdate(self) { scene.setActive('patates', self.progress); }
+    });
   })();
 
   /* ---------------------------------------------------------
      DÖNER
   --------------------------------------------------------- */
   (function donerInit() {
+    // ---------------------------------------------------------------
+    // DÖNER is the flagship item section: it gets the richest, most
+    // scroll-reactive treatment on the site (sizzle canvas, dual sheen
+    // highlights, knife glint, heavier shaving throws) rather than the
+    // same token gesture as patates/pizza/burger/kola.
+    // ---------------------------------------------------------------
     const section = document.getElementById('doner');
     const counter = document.querySelector('.doner-counter-text');
+    const coneShine = document.getElementById('coneShine');
+    const coneShine2 = document.getElementById('coneShine2');
+    const knifeGlint = document.getElementById('knifeGlint');
+    const photo = document.getElementById('donerPhoto');
+
+    // heat: 0 at pin start, ramps to 1 by ~30% scroll and *stays* there —
+    // döner should read as sustained-sizzling through "DİLİMLENİYOR" and
+    // still glistening at "HAZIR", not fade back out like the bg blobs do.
+    // Shared by the sizzle-canvas closure below — no accessor indirection
+    // needed since sizzleCanvas() is defined in this same function scope.
+    let heat = 0;
 
     initAssembleSection(section, {
       onUpdate(self) {
-        if (!counter) return;
+        scene.setActive('doner', self.progress);
         const p = self.progress;
+        heat = Math.min(1, p / 0.3);
+        if (coneShine) gsap.set(coneShine, { opacity: 0.07 + heat * 0.16 });
+        if (coneShine2) gsap.set(coneShine2, { opacity: heat * 0.14 });
+        if (knifeGlint) gsap.set(knifeGlint, { opacity: 0.15 + heat * 0.55 });
+        // Slow Ken Burns pan across the whole pin, independent of the
+        // photo's own one-shot entrance tween (that only ever touches
+        // scale/opacity — from/to x and y are both 0 — so writing x/y
+        // here every frame doesn't fight it).
+        if (photo) gsap.set(photo, { x: (p - 0.5) * -16, y: (p - 0.5) * 12 });
+        if (!counter) return;
         if (p < 0.15) counter.textContent = 'ISINIYOR…';
         else if (p < 0.65) counter.textContent = 'DİLİMLENİYOR…';
         else counter.textContent = 'HAZIR! AFİYET OLSUN';
@@ -297,40 +515,150 @@
     });
 
     if (!REDUCED) {
-      gsap.to('#coneShine', { x: 210, duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('#coneShine', { x: 140, duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('#coneShine2', { x: -140, duration: 3.1, repeat: -1, yoyo: true, ease: 'sine.inOut' });
       gsap.to('#meatCone', { scaleX: 0.965, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut', transformOrigin: '50% 50%' });
       document.querySelectorAll('.flame-flecks path').forEach((p, i) => {
         gsap.to(p, { opacity: 0.45, y: -4, duration: 0.5 + Math.random() * 0.4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.15 });
       });
+      // Knife glint sparkle — fast flicker layered on top of the
+      // progress-driven base opacity set in onUpdate above.
+      if (knifeGlint) {
+        gsap.to(knifeGlint, { attr: { 'stroke-width': 3.4 }, duration: 0.18, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      }
     }
+
+    /* -------------------------------------------------------------
+       Sizzle canvas: fake "video background" for the döner pin.
+       Three cheap layers, all scaling with `heat`:
+       - heat-shimmer bands (a handful of translucent warm strips with
+         sinusoidal x-jitter — no per-pixel distortion/feTurbulence)
+       - embers (radial-gradient glow, count+speed scale with heat)
+       - smoke wisps (soft, slow, low-alpha, thicken with heat)
+       Gated by IntersectionObserver so the flagship treatment doesn't
+       cost anything once the user has scrolled past döner.
+    ------------------------------------------------------------- */
+    (function sizzleCanvas() {
+      const canvas = document.getElementById('doner-heat-canvas');
+      if (!canvas || REDUCED) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, embers = [], smoke = [];
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        w = canvas.width = Math.max(1, Math.round(rect.width));
+        h = canvas.height = Math.max(1, Math.round(rect.height));
+      }
+      function spawnEmber() {
+        return {
+          x: w * 0.32 + Math.random() * w * 0.36,
+          y: h * 0.5 + Math.random() * h * 0.3,
+          vy: -(0.5 + Math.random() * 1.1),
+          vx: (Math.random() - 0.5) * 0.5,
+          r: 1.2 + Math.random() * 2.4,
+          seed: Math.random() * 100,
+          life: Math.random() * 60,
+          maxLife: 50 + Math.random() * 70
+        };
+      }
+      function spawnSmoke() {
+        return {
+          x: w * 0.3 + Math.random() * w * 0.4,
+          y: h * 0.45 + Math.random() * h * 0.25,
+          vy: -(0.15 + Math.random() * 0.25),
+          vx: (Math.random() - 0.5) * 0.15,
+          r: 14 + Math.random() * 22,
+          life: Math.random() * 140,
+          maxLife: 120 + Math.random() * 100
+        };
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      window.addEventListener('load', resize);
+
+      let tabVisible = true;
+      document.addEventListener('visibilitychange', () => { tabVisible = !document.hidden; });
+
+      let inView = false;
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((e) => { inView = e.isIntersecting; });
+        }, { rootMargin: '200px' }).observe(section);
+      } else {
+        inView = true;
+      }
+
+      function tick(now) {
+        requestAnimationFrame(tick);
+        if (!tabVisible || !inView) return;
+        ctx.clearRect(0, 0, w, h);
+        if (heat <= 0.015) return;
+
+        // heat-shimmer bands
+        const bandCount = 6;
+        for (let i = 0; i < bandCount; i++) {
+          const by = h * 0.42 + (h * 0.4 * i) / bandCount;
+          const jitter = Math.sin(now * 0.0018 + i * 1.3) * 6 * heat;
+          ctx.fillStyle = 'rgba(242, 169, 59, ' + (0.035 * heat).toFixed(3) + ')';
+          ctx.fillRect(jitter - 4, by, w + 8, h * 0.4 / bandCount + 2);
+        }
+
+        // smoke wisps (thicken with heat)
+        const smokeTarget = Math.round(2 + heat * 9);
+        while (smoke.length < smokeTarget) smoke.push(spawnSmoke());
+        if (smoke.length > smokeTarget) smoke.length = smokeTarget;
+        smoke.forEach((s) => {
+          s.x += s.vx; s.y += s.vy * (0.7 + heat * 0.6); s.life++;
+          const t = s.life / s.maxLife;
+          const alpha = Math.sin(Math.PI * Math.min(t, 1)) * 0.1 * heat;
+          const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+          g.addColorStop(0, 'rgba(90, 74, 58, ' + alpha.toFixed(3) + ')');
+          g.addColorStop(1, 'rgba(90, 74, 58, 0)');
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+          if (t >= 1) Object.assign(s, spawnSmoke());
+        });
+
+        // embers (glow, count + speed scale with heat)
+        const emberTarget = Math.round(8 + heat * 40);
+        while (embers.length < emberTarget) embers.push(spawnEmber());
+        if (embers.length > emberTarget) embers.length = emberTarget;
+        embers.forEach((e) => {
+          e.x += e.vx * (0.6 + heat); e.y += e.vy * (0.6 + heat * 1.5); e.life++;
+          const t = e.life / e.maxLife;
+          const twinkle = 0.6 + 0.4 * Math.sin(now * 0.01 + e.seed);
+          const alpha = Math.sin(Math.PI * Math.min(t, 1)) * (0.3 + heat * 0.5) * twinkle;
+          const g = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 3);
+          g.addColorStop(0, 'rgba(255, 210, 130, ' + alpha.toFixed(3) + ')');
+          g.addColorStop(0.4, 'rgba(242, 169, 59, ' + (alpha * 0.6).toFixed(3) + ')');
+          g.addColorStop(1, 'rgba(225, 78, 44, 0)');
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(e.x, e.y, e.r * 3, 0, Math.PI * 2); ctx.fill();
+          if (t >= 1) Object.assign(e, spawnEmber());
+        });
+      }
+      requestAnimationFrame(tick);
+    })();
   })();
 
   /* ---------------------------------------------------------
      PIZZA
   --------------------------------------------------------- */
   (function pizzaInit() {
-    const cheese = document.getElementById('cheeseBlobs');
-    for (let i = 0; i < 12; i++) {
-      const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.2;
-      const r = 205 + Math.random() * 14;
-      const fx = 400 + Math.cos(angle) * r;
-      const fy = 400 + Math.sin(angle) * r;
-      makePiece(cheese, 'circle', { cx: fx.toFixed(1), cy: fy.toFixed(1), r: (10 + Math.random() * 6).toFixed(1), fill: 'var(--mustard-light)' }, {
-        fromScale: '0', pos: (0.32 + Math.random() * 0.08).toFixed(3), origin: 'center'
-      });
-    }
-
-    scatterParticles(document.getElementById('pepperoni'), 10, {
-      cx: 400, cy: 400, radius: 190, flatten: 1, uniformDisk: true,
-      size: [20, 26], color: 'var(--red-deep)', posStart: 0.44, posEnd: 0.72, distance: 260
-    });
-
+    // The pizza is now one real overhead photo (see index.html) with its
+    // own pepperoni/cheese/herbs already baked in, so there's no separate
+    // vector or photo pepperoni layer scattered on top of it anymore —
+    // that would just double up toppings the photo already shows. Herb
+    // flecks stay as a light vector accent since they read fine at this
+    // tiny size and complement rather than duplicate the photo's basil.
     scatterParticles(document.getElementById('pizzaHerbs'), 16, {
       cx: 400, cy: 400, radius: 210, flatten: 1, uniformDisk: true,
       size: [2, 3.5], color: 'var(--green-dark)', posStart: 0.76, posEnd: 0.92, distance: 200
     });
 
-    const tl = initAssembleSection(document.getElementById('pizza'));
+    const tl = initAssembleSection(document.getElementById('pizza'), {
+      onUpdate(self) { scene.setActive('pizza', self.progress); }
+    });
     if (tl) tl.to('#pizzaGroup', { rotate: '+=380', duration: 0.16, ease: 'power1.inOut' }, 0.88);
   })();
 
@@ -346,7 +674,9 @@
       originX: 350, originY: 400, landY: 505, landX: [220, 480], spread: 30,
       color: '#F4E9D8', size: [3, 4.5], posStart: 0.66, posEnd: 0.78
     });
-    initAssembleSection(document.getElementById('burger'));
+    initAssembleSection(document.getElementById('burger'), {
+      onUpdate(self) { scene.setActive('burger', self.progress); }
+    });
   })();
 
   /* ---------------------------------------------------------
@@ -363,16 +693,15 @@
       g.dataset.fromScale = '0.6';
       g.dataset.pos = (0.32 + i * 0.045).toFixed(3);
       g.dataset.origin = 'center';
-      const rect = document.createElementNS(SVG_NS, 'rect');
-      rect.setAttribute('x', pos[0]); rect.setAttribute('y', pos[1]);
-      rect.setAttribute('width', '30'); rect.setAttribute('height', '30');
-      rect.setAttribute('rx', '6'); rect.setAttribute('fill', '#EAF4F1'); rect.setAttribute('opacity', '0.85');
-      rect.setAttribute('stroke', 'var(--ink)'); rect.setAttribute('stroke-width', '2.5');
-      const line = document.createElementNS(SVG_NS, 'line');
-      line.setAttribute('x1', pos[0] + 6); line.setAttribute('y1', pos[1] + 6);
-      line.setAttribute('x2', pos[0] + 20); line.setAttribute('y2', pos[1] + 12);
-      line.setAttribute('stroke', '#fff'); line.setAttribute('stroke-width', '2'); line.setAttribute('opacity', '0.7');
-      g.appendChild(rect); g.appendChild(line);
+      // real cropped/background-removed ice cube photo (desaturated to
+      // pull the drink's blue tint back to clear) instead of a flat-color
+      // rounded-rect + gloss line
+      const img = document.createElementNS(SVG_NS, 'image');
+      img.setAttribute('href', 'assets/photos/kola/ice.png');
+      img.setAttribute('x', pos[0]); img.setAttribute('y', pos[1]);
+      img.setAttribute('width', '32'); img.setAttribute('height', '32');
+      img.setAttribute('opacity', '0.94');
+      g.appendChild(img);
       iceGroup.appendChild(g);
     });
 
@@ -403,6 +732,7 @@
 
     const tl = initAssembleSection(document.getElementById('kola'), {
       onUpdate(self) {
+        scene.setActive('kola', self.progress);
         if (bubblesTl) { if (self.progress > 0.5) bubblesTl.play(); else bubblesTl.pause(0); }
       }
     });

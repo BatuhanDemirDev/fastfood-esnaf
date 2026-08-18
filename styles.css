@@ -139,6 +139,86 @@ button { font: inherit; background: none; border: none; color: inherit; cursor: 
   z-index: 0; pointer-events: none; opacity: 0.5;
 }
 
+/* ---------- Scroll-driven scene backdrop ----------
+   One fixed layer sits behind the whole page. As each item section
+   scrubs through its pin (see initAssembleSection in script.js), its
+   themed "blob" fades up while the others fade down — same crossfade
+   trick behind most scroll-morph backgrounds, just done with pre-tinted
+   layers instead of live gradient-color interpolation (cheaper, and
+   avoids animating oklch/srgb color-mix per frame). */
+.bg-scene {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden;
+  /* --scene-bg is written every scrub frame by scene.applyBg() in script.js —
+     a continuous RGB lerp between per-item mood colors (resolved from the
+     current theme's tokens at runtime, so it's never a hardcoded color that
+     could go wrong in light mode). Falls back to the static --bg token
+     before JS runs. Short linear transition smooths only the theme-toggle
+     snap; scroll-driven updates are frequent enough not to need it. */
+  background: var(--scene-bg, var(--bg));
+  transition: background-color 0.2s linear;
+}
+.bg-blob {
+  position: absolute;
+  width: 82vmax; height: 82vmax;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.bg-blob--hero {
+  left: 42%; top: 30%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mustard) 85%, transparent) 0%, color-mix(in srgb, var(--mustard) 30%, transparent) 40%, transparent 74%);
+}
+.bg-blob--patates {
+  left: 20%; top: 18%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mustard-light) 90%, transparent) 0%, color-mix(in srgb, var(--mustard) 35%, transparent) 42%, transparent 74%);
+}
+.bg-blob--doner {
+  left: 58%; top: 40%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--red) 90%, transparent) 0%, color-mix(in srgb, var(--red-deep) 35%, transparent) 42%, transparent 74%);
+}
+.bg-blob--pizza {
+  left: 50%; top: 46%;
+  width: 95vmax; height: 95vmax;
+  background: conic-gradient(from 0deg,
+    color-mix(in srgb, var(--red-deep) 75%, transparent),
+    color-mix(in srgb, var(--mustard) 65%, transparent),
+    color-mix(in srgb, var(--red-deep) 75%, transparent),
+    color-mix(in srgb, var(--mustard-light) 65%, transparent),
+    color-mix(in srgb, var(--red-deep) 75%, transparent));
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 70%);
+}
+.bg-blob--burger {
+  left: 74%; top: 64%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--kraft-light) 88%, transparent) 0%, color-mix(in srgb, var(--kraft-dark) 38%, transparent) 42%, transparent 74%);
+}
+.bg-blob--kola {
+  left: 62%; top: 38%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--status-open) 88%, transparent) 0%, color-mix(in srgb, var(--status-open) 35%, transparent) 42%, transparent 74%);
+}
+
+.bg-grain {
+  position: absolute; inset: -10%;
+  opacity: 0.05; mix-blend-mode: overlay; pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.9) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+.bg-vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 45%, color-mix(in srgb, var(--scene-bg, var(--bg)) 75%, transparent) 100%);
+}
+
+@media (max-width: 700px) {
+  .bg-blob { width: 130vmax; height: 130vmax; }
+  .bg-blob--pizza { width: 140vmax; height: 140vmax; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-blob--pizza { animation: none; }
+}
+
 /* ---------- Type scale ---------- */
 .display-xl { font-size: clamp(2.6rem, 7vw, 5.2rem); line-height: 0.98; }
 .display-lg { font-size: clamp(2.1rem, 5vw, 3.6rem); line-height: 1; }
@@ -249,6 +329,70 @@ section { position: relative; padding: 0 28px; }
 }
 @media (max-width: 900px) { .stamp-badge { display: none; } }
 
+/* ---------- Text reveal (headline mask) ----------
+   Wraps each h1/h2 in an overflow:hidden box; script.js sets the heading's
+   yPercent/opacity from JS only (never from CSS), so a no-JS or JS-failure
+   fallback always renders the heading normally instead of stuck hidden. */
+.text-reveal { overflow: hidden; }
+
+/* ---------- Cinematic section wipes ----------
+   Stamped diagonal-cut panels used as scroll-scrubbed transitions between
+   sections (knife-cut motif for the döner-bıçağı brand element). Default
+   state is invisible/untransformed so a no-JS or reduced-motion fallback
+   never leaves one permanently covering content — script.js only reveals
+   and animates them inside the non-reduced-motion branch of
+   initAssembleSection, using transform-only (translateX) tweens for cost. */
+.section-wipe {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0% 100%);
+  opacity: 0; pointer-events: none;
+}
+.section-wipe span {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.5rem, 5vw, 3.4rem); letter-spacing: 0.02em;
+  text-align: center; padding: 0 8vw; color: var(--ink);
+}
+.wipe-mustard { background: var(--mustard); }
+.wipe-red { background: var(--red); }
+.wipe-red span { color: #fff; }
+.wipe-ember { background: linear-gradient(120deg, var(--red-deep), var(--mustard)); }
+.wipe-ember span { color: #fff; }
+.wipe-kraft { background: var(--kraft-dark); }
+.wipe-kraft span { color: var(--text); }
+.wipe-teal { background: var(--status-open); }
+.wipe-teal span { color: #fff; }
+.wipe-ink { background: var(--ink); }
+.wipe-ink span { color: var(--mustard); }
+
+/* ---------- Esnaf ticker ----------
+   Infinite marquee divider, styled after the patates takeaway box's
+   diagonal red/kraft stripe (see #boxStripe pattern in the SVG) rather
+   than a flat generic accent bar — same motif, different medium. */
+.ticker {
+  overflow: hidden;
+  border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  background: repeating-linear-gradient(135deg, var(--red) 0 26px, var(--kraft) 26px 52px);
+  padding: 14px 0;
+}
+.ticker-track {
+  display: flex; width: max-content;
+  animation: ticker-scroll 22s linear infinite;
+}
+.ticker-track span {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: clamp(1.1rem, 2.6vw, 1.6rem); letter-spacing: 0.04em;
+  color: var(--ink); white-space: nowrap;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (max-width: 760px) {
+  .ticker-track { animation-duration: 14s; }
+  .ticker-track span { font-size: 1rem; }
+}
+
 /* ---------- Items intro ---------- */
 .items-intro {
   max-width: 720px; margin: 0 auto; text-align: left; padding: 130px 28px 70px;
@@ -264,6 +408,35 @@ section { position: relative; padding: 0 28px; }
 .item-section.reverse .item-inner { grid-template-columns: 1.15fr 0.85fr; }
 .item-section.reverse .item-text { order: 2; }
 .item-section.reverse .item-illustration { order: 1; }
+.item-illustration { position: relative; }
+
+/* Fake "video background" for the döner pin: a canvas of embers whose
+   count/velocity is driven by that section's own scroll progress (see
+   donerInit in script.js). Screen-blended so it reads as heat/spark glow
+   rather than opaque particles sitting on top of the linework. */
+#doner-heat-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; mix-blend-mode: screen; opacity: 0.9;
+}
+/* Falling meat scraps (döner flagship treatment): a static drop-shadow
+   filter reads as contact-shadow/weight without animating the filter
+   itself each frame — only the group's transform (already GSAP-driven)
+   moves, keeping this cheap. */
+#donerSvg .shaving {
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,0.45));
+}
+/* Grounds the real-photo meat cone against the page the way the old
+   vector's ink stroke used to — a soft contact shadow instead of an outline,
+   since a photo doesn't want a hard cartoon border. */
+#meatCone {
+  filter: drop-shadow(0 14px 22px rgba(0,0,0,0.45));
+}
+/* Real pepperoni photos (elliptical-cut, not a plain-background rembg
+   isolation — see pizzaInit) sit on a real cheese photo; a soft contact
+   shadow keeps them from reading as pasted-on stickers. */
+#pepperoni image {
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.4));
+}
 
 .item-num {
   font-family: var(--font-hand); font-size: 2.4rem; color: var(--red);

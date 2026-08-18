@@ -12,6 +12,17 @@
 </head>
 <body>
 
+<div class="bg-scene" id="bgScene" aria-hidden="true">
+  <div class="bg-blob bg-blob--hero" data-depth="0.04"></div>
+  <div class="bg-blob bg-blob--patates" data-depth="0.07"></div>
+  <div class="bg-blob bg-blob--doner" data-depth="0.05"></div>
+  <div class="bg-blob bg-blob--pizza" data-depth="0.06"></div>
+  <div class="bg-blob bg-blob--burger" data-depth="0.08"></div>
+  <div class="bg-blob bg-blob--kola" data-depth="0.05"></div>
+  <div class="bg-grain"></div>
+  <div class="bg-vignette"></div>
+</div>
+
 <canvas id="smoke-canvas" aria-hidden="true"></canvas>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -70,7 +81,7 @@
     <div class="hero-inner">
       <div class="hero-content">
         <p class="eyebrow">ESNAF USULÜ · SOKAĞIN LEZZETİ</p>
-        <h1 class="display-xl">TAM KIVAMINDA,<br><span class="accent-text">SIKI SIKIYA</span><br>SARILI.</h1>
+        <div class="text-reveal"><h1 class="display-xl">TAM KIVAMINDA,<br><span class="accent-text">SIKI SIKIYA</span><br>SARILI.</h1></div>
         <p class="hero-sub">Malzemeler, garnitürler ve soslar gözünüzün önünde bir araya geliyor. Aşağı kaydırın, lezzet toparlansın.</p>
         <div class="hero-actions">
           <a href="#menu" class="btn btn-primary">Menüyü Gör</a>
@@ -130,7 +141,15 @@
         </svg>
       </div>
     </div>
+    <div class="section-wipe wipe-out wipe-ink" aria-hidden="true"><span>HAZIRLANIŞINI İZLEYİN ↓</span></div>
   </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>TAZE · GÜNLÜK · ELDEN ELE · SICAK SICAK · USTA İŞİ · </span>
+      <span>TAZE · GÜNLÜK · ELDEN ELE · SICAK SICAK · USTA İŞİ · </span>
+    </div>
+  </div>
 
   <!-- ============ ITEMS INTRO ============ -->
   <section id="lezzetler" class="items-intro">
@@ -143,45 +162,50 @@
     <div class="item-inner">
       <div class="item-text">
         <span class="item-num">01</span>
-        <h2 class="display-lg">ÇITIR ÇITIR<br><span class="accent-text">PATATES</span></h2>
+        <div class="text-reveal"><h2 class="display-lg">ÇITIR ÇITIR<br><span class="accent-text">PATATES</span></h2></div>
         <p>Tuzu tam kıvamında, kutusuna sıcacık dolduruluyor. Her lokma çıtır, her kutu dolu.</p>
         <span class="fun-chip piece" data-from-y="60" data-pos="0.92">150gr · Taze Kesim</span>
       </div>
       <div class="item-illustration">
         <svg viewBox="0 0 800 800" id="friesSvg" class="assemble-svg" aria-label="Tuzlanan ve kutusuna dolan patates illüstrasyonu">
           <defs>
+            <!-- real kraft-paper photo (Unsplash, Ivan Gromov) standing in
+                 for the flat --kraft fill; the red stripe stays a vector
+                 rect since it's brand identity, not a texture -->
             <pattern id="boxStripe" width="34" height="34" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-              <rect width="34" height="34" fill="var(--kraft)"/>
+              <image href="assets/photos/patates/kraft-paper.jpg" x="0" y="0" width="34" height="34" preserveAspectRatio="none"/>
               <rect width="17" height="34" fill="var(--red)"/>
             </pattern>
           </defs>
           <!-- box back -->
           <path d="M270 780 L250 460 L550 460 L530 780 Z" fill="url(#boxStripe)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
-          <!-- salt shaker -->
+          <!-- salt shaker: real photo (Unsplash, Олександр К), background-removed -->
           <g class="piece" data-to-rot="34" data-duration="0.22" data-pos="0.02" id="shaker" data-origin="50% 92%">
-            <rect x="345" y="90" width="90" height="150" rx="18" fill="#EFE7D6" stroke="var(--ink)" stroke-width="5"/>
-            <rect x="358" y="65" width="64" height="35" rx="10" fill="var(--steel)" stroke="var(--ink)" stroke-width="4"/>
-            <circle cx="378" cy="80" r="3" fill="var(--ink)"/><circle cx="392" cy="80" r="3" fill="var(--ink)"/><circle cx="406" cy="80" r="3" fill="var(--ink)"/>
+            <image href="assets/photos/patates/salt-shaker.png" x="330" y="60" width="119" height="175"/>
           </g>
           <g id="saltParticles"></g>
-          <!-- fries -->
+          <!-- fries: 3 real cropped/background-removed potato photos (one is a
+               naturally-crossed pair from the source shot), reused with an
+               in-place horizontal flip (scale(-1,1) around the same box, see
+               transform lists below) for variety instead of sourcing 6 unique
+               isolated fries. -->
           <g class="piece" data-from-x="-520" data-from-y="-120" data-from-rot="-70" data-pos="0.42" data-origin="50% 100%">
-            <rect x="300" y="330" width="34" height="240" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-8 317 570)"/>
+            <image href="assets/photos/patates/fry-a.png" x="300" y="340" width="106" height="230" transform="rotate(-8 353 570)"/>
           </g>
           <g class="piece" data-from-x="480" data-from-y="-160" data-from-rot="80" data-pos="0.47" data-origin="50% 100%">
-            <rect x="345" y="300" width="34" height="270" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(4 362 570)"/>
+            <image href="assets/photos/patates/fry-b.png" x="345" y="310" width="103" height="250" transform="rotate(4 396 560)"/>
           </g>
           <g class="piece" data-from-x="-560" data-from-y="80" data-from-rot="-90" data-pos="0.51" data-origin="50% 100%">
-            <rect x="392" y="320" width="34" height="250" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-3 409 570)"/>
+            <image href="assets/photos/patates/fry-pair.png" x="380" y="305" width="129" height="260" transform="rotate(-3 444 565)"/>
           </g>
           <g class="piece" data-from-x="540" data-from-y="60" data-from-rot="90" data-pos="0.55" data-origin="50% 100%">
-            <rect x="438" y="335" width="34" height="235" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(9 455 570)"/>
+            <image href="assets/photos/patates/fry-a.png" x="428" y="335" width="106" height="230" transform="rotate(9 481 565) translate(962,0) scale(-1,1)"/>
           </g>
           <g class="piece" data-from-x="-500" data-from-y="-60" data-from-rot="-60" data-pos="0.59" data-origin="50% 100%">
-            <rect x="248" y="345" width="30" height="225" rx="8" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-16 263 570)"/>
+            <image href="assets/photos/patates/fry-b.png" x="245" y="320" width="103" height="250" transform="rotate(-16 296 570) translate(593,0) scale(-1,1)"/>
           </g>
           <g class="piece" data-from-x="500" data-from-y="-40" data-from-rot="60" data-pos="0.63" data-origin="50% 100%">
-            <rect x="485" y="340" width="30" height="230" rx="8" fill="var(--mustard-light)" stroke="var(--ink)" stroke-width="5" transform="rotate(15 500 570)"/>
+            <image href="assets/photos/patates/fry-b.png" x="475" y="345" width="88" height="215" transform="rotate(15 519 560)"/>
           </g>
           <!-- box front flap -->
           <g class="piece" data-type="flap" data-from-rot="-75" data-pos="0.8" data-origin="50% 100%">
@@ -191,13 +215,15 @@
         </svg>
       </div>
     </div>
+    <div class="section-wipe wipe-in wipe-mustard" aria-hidden="true"><span>SIRA PATATESTE</span></div>
   </section>
 
   <!-- ============ DÖNER ============ -->
   <section id="doner" class="item-section assemble-section reverse" data-scroll-length="1800">
     <div class="item-inner">
       <div class="item-illustration">
-        <svg viewBox="0 0 600 900" id="donerSvg" class="assemble-svg" aria-label="Dönen ve dilimlenen döner illüstrasyonu">
+        <canvas id="doner-heat-canvas" aria-hidden="true"></canvas>
+        <svg viewBox="0 0 600 900" id="donerSvg" class="assemble-svg" aria-label="İstanbul'da bir ustanın dikey şişten döner kestiği fotoğraf">
           <!-- flame flecks -->
           <g class="flame-flecks" aria-hidden="true">
             <path d="M240 830 q10 -30 -6 -46 q22 6 20 -20 q18 14 10 40 q16 -8 8 -28 q20 20 8 54Z" fill="var(--red)"/>
@@ -207,39 +233,71 @@
           <!-- spit -->
           <rect x="292" y="40" width="16" height="720" fill="var(--steel)" stroke="var(--ink)" stroke-width="3"/>
           <polygon points="284,40 316,40 300,10" fill="var(--steel)" stroke="var(--ink)" stroke-width="3"/>
-          <!-- meat cone -->
+          <!-- real döner meat photo (cropped from an Unsplash shot of an
+               Istanbul kebab shop, background-removed) masked into the same
+               tapered-cone silhouette the old hand-drawn ellipse stack used
+               — real texture, but the exact controlled geometry the knife
+               and sparks below are already positioned against. The inner
+               group holding the photo is what GSAP zooms/pans, so the clip
+               silhouette itself never moves — a proper Ken Burns reveal. -->
+          <clipPath id="donerConeClip">
+            <path d="M 300 94 C 309.2 98.3 339.2 106.5 355 120 C 370.8 133.5 383.3 155.8 395 175 C 406.7 194.2 417.5 214.2 425 235 C 432.5 255.8 436.2 278.3 440 300 C 443.8 321.7 448 343.3 448 365 C 448 386.7 444.7 408.7 440 430 C 435.3 451.3 428.3 473 420 493 C 411.7 513 400.8 532.5 390 550 C 379.2 567.5 370 586 355 598 C 340 610 309.2 618 300 622 C 290.8 618 260 610 245 598 C 230 586 220.8 567.5 210 550 C 199.2 532.5 188.3 513 180 493 C 171.7 473 164.7 451.3 160 430 C 155.3 408.7 152 386.7 152 365 C 152 343.3 156.2 321.7 160 300 C 163.8 278.3 167.5 255.8 175 235 C 182.5 214.2 193.3 194.2 205 175 C 216.7 155.8 229.2 133.5 245 120 C 260.8 106.5 290.8 98.3 300 94 Z"/>
+          </clipPath>
+          <radialGradient id="donerVignette" cx="50%" cy="42%" r="72%">
+            <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.5"/>
+          </radialGradient>
           <g id="meatCone">
-            <ellipse cx="300" cy="120" rx="55" ry="26" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="175" rx="95" ry="34" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="235" rx="125" ry="38" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="300" rx="140" ry="40" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="365" rx="148" ry="42" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="430" rx="140" ry="40" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="493" rx="120" ry="38" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="550" rx="90" ry="32" fill="var(--kraft)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse cx="300" cy="598" rx="55" ry="24" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="4"/>
-            <ellipse id="coneShine" cx="260" cy="350" rx="30" ry="220" fill="#FFFFFF" opacity="0.16"/>
+            <g clip-path="url(#donerConeClip)">
+              <image id="donerPhoto" class="piece" href="assets/photos/doner-meat-cone.png"
+                     x="152" y="94" width="296" height="528" preserveAspectRatio="xMidYMid slice"
+                     data-from-scale="1.24" data-duration="0.34" data-pos="0"/>
+              <!-- ties the photo's neutral kitchen tones into the brand
+                   palette without a flat color overlay masking detail -->
+              <rect x="152" y="94" width="296" height="528" fill="var(--red-deep)" opacity="0.1" style="mix-blend-mode:multiply"/>
+              <rect x="152" y="94" width="296" height="528" fill="url(#donerVignette)"/>
+            </g>
+            <ellipse id="coneShine" cx="220" cy="260" rx="10" ry="190" fill="#FFFFFF" opacity="0.1" clip-path="url(#donerConeClip)" transform="rotate(-14 220 260)"/>
+            <!-- secondary juice/oil sheen, intensifies with scroll heat via donerInit -->
+            <ellipse id="coneShine2" cx="390" cy="440" rx="8" ry="160" fill="#FFE9C2" opacity="0" clip-path="url(#donerConeClip)" transform="rotate(-14 390 440)"/>
           </g>
-          <!-- knife -->
+          <!-- knife: real chef's knife photo (Unsplash, Marios Gkortsilas),
+               background-removed. The source shot is a steep diagonal, so a
+               nested transform re-orients it: translate(-900,-1560) moves the
+               blade tip (its position in the source image) to the origin,
+               rotate+scale operate around that fixed point, then
+               translate(420,235) drops the tip exactly where it meets the
+               meat cone's edge — same math as "rotate around a point" but
+               done manually since the point isn't the image's own center. -->
           <g class="piece" data-from-y="560" data-pos="0.08" data-duration="0.62" id="donerKnife" data-origin="50% 50%">
-            <rect x="415" y="230" width="150" height="16" rx="4" fill="var(--steel)" stroke="var(--ink)" stroke-width="3" transform="rotate(-14 490 238)"/>
-            <rect x="540" y="220" width="34" height="34" rx="6" fill="var(--ink-soft)" transform="rotate(-14 557 237)"/>
+            <g transform="translate(420,235) rotate(115.3) scale(0.0845) translate(-900,-1560)">
+              <image href="assets/photos/doner/knife.png" x="0" y="0" width="940" height="1599"/>
+              <!-- blade glint: opacity driven by heat, stroke-width
+                   sparkle-flickered; drawn in the same local/pre-transform
+                   space as the image so it rides along with it -->
+              <line id="knifeGlint" x1="300" y1="700" x2="880" y2="1540" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" opacity="0"/>
+            </g>
           </g>
-          <!-- shavings -->
-          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.15" data-to-x="120" data-to-y="360" data-to-rot="120">
-            <path d="M300 235 q30 6 22 30 q-4 20 -26 14 q-18 -6 -14 -26 q4 -16 18 -18Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          <!-- falling meat scraps: real cropped/background-removed döner
+               texture (organic torn-blob alpha mask, not a plain ellipse —
+               see the scrap-s*.png source) instead of a hand-drawn blob or
+               flat-color spark, reused across slots with duration/rotation
+               variety (heavier gravity-in ease from buildTween + contact
+               shadow via .shaving in CSS). -->
+          <g class="piece shaving" data-from-x="0" data-from-y="0" data-pos="0.15" data-duration="0.2" data-to-x="80" data-to-y="240" data-to-rot="40">
+            <image href="assets/photos/doner/scrap-s1.png" x="418" y="212" width="34" height="33"/>
           </g>
-          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.25" data-to-x="-80" data-to-y="400" data-to-rot="-100">
-            <path d="M300 300 q28 8 18 28 q-6 18 -24 12 q-16 -6 -12 -24 q4 -14 18 -16Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+          <g class="piece shaving" data-from-x="0" data-from-y="0" data-pos="0.25" data-duration="0.2" data-to-x="60" data-to-y="270" data-to-rot="-30">
+            <image href="assets/photos/doner/scrap-s2.png" x="415" y="282" width="36" height="30"/>
           </g>
-          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.35" data-to-x="150" data-to-y="420" data-to-rot="150">
-            <path d="M300 365 q30 6 20 30 q-6 18 -26 12 q-16 -6 -12 -24 q4 -14 18 -18Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          <g class="piece shaving" data-from-x="0" data-from-y="0" data-pos="0.35" data-duration="0.2" data-to-x="95" data-to-y="280" data-to-rot="50">
+            <image href="assets/photos/doner/scrap-s3.png" x="417" y="348" width="34" height="31"/>
           </g>
-          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.45" data-to-x="-140" data-to-y="440" data-to-rot="-140">
-            <path d="M300 430 q26 8 16 26 q-6 18 -24 12 q-14 -6 -10 -22 q4 -14 18 -16Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="3"/>
+          <g class="piece shaving" data-from-x="0" data-from-y="0" data-pos="0.45" data-duration="0.2" data-to-x="55" data-to-y="300" data-to-rot="-40">
+            <image href="assets/photos/doner/scrap-s4.png" x="414" y="412" width="33" height="29"/>
           </g>
-          <g class="piece" data-from-x="0" data-from-y="0" data-pos="0.55" data-to-x="60" data-to-y="460" data-to-rot="90">
-            <path d="M300 493 q24 8 16 24 q-6 16 -22 10 q-14 -6 -10 -20 q4 -12 16 -14Z" fill="var(--red-deep)" stroke="var(--ink)" stroke-width="3"/>
+          <g class="piece shaving" data-from-x="0" data-from-y="0" data-pos="0.55" data-duration="0.2" data-to-x="70" data-to-y="310" data-to-rot="30">
+            <image href="assets/photos/doner/scrap-s1.png" x="418" y="475" width="32" height="31"/>
           </g>
           <!-- plate + wrap catching shavings -->
           <g class="piece" data-from-y="180" data-pos="0.5" data-origin="50% 100%">
@@ -253,11 +311,12 @@
       </div>
       <div class="item-text">
         <span class="item-num">02</span>
-        <h2 class="display-lg">DÖNEN<br><span class="accent-text">LEZZET</span></h2>
+        <div class="text-reveal"><h2 class="display-lg">DÖNEN<br><span class="accent-text">LEZZET</span></h2></div>
         <p>Usta bıçağı ne zaman indirirse, o an ince ince dilimleniyor. Sıcağı sıcağına, taze taze.</p>
         <span class="fun-chip piece" data-from-y="60" data-pos="0.9">Günlük Taze Et</span>
       </div>
     </div>
+    <div class="section-wipe wipe-in wipe-red" aria-hidden="true"><span>BIÇAK İNİYOR</span></div>
   </section>
 
   <!-- ============ PIZZA ============ -->
@@ -265,24 +324,33 @@
     <div class="item-inner">
       <div class="item-text">
         <span class="item-num">03</span>
-        <h2 class="display-lg">DÖNE DÖNE<br><span class="accent-text">PİZZA</span></h2>
+        <div class="text-reveal"><h2 class="display-lg">DÖNE DÖNE<br><span class="accent-text">PİZZA</span></h2></div>
         <p>Hamur havada döner, malzemeler tam üstüne iner. Fırından çıkar çıkmaz karşınızda.</p>
         <span class="fun-chip piece" data-from-y="60" data-pos="0.94">Odun Ateşi Lezzeti</span>
       </div>
       <div class="item-illustration">
         <svg viewBox="0 0 800 800" id="pizzaSvg" class="assemble-svg" aria-label="Dönerek hazırlanan pizza illüstrasyonu">
           <g id="pizzaGroup" class="piece" data-from-rot="-820" data-from-scale="0.32" data-pos="0" data-origin="50% 50%">
-            <circle cx="400" cy="400" r="290" fill="var(--kraft)" stroke="var(--ink)" stroke-width="8"/>
+            <!-- real whole pizza, shot directly overhead (Unsplash, Thomas
+                 Tucker) — a proper bird's-eye top-down shot, not an angled
+                 slice-level crop, so it sits correctly in a circular clip.
+                 Pepperoni/cheese/herbs are already in the photo, so unlike
+                 the earlier version there's no separate vector/photo
+                 pepperoni layer scattered on top of it (that would just
+                 double up on toppings the photo already shows). -->
             <circle cx="400" cy="400" r="290" fill="none" stroke="var(--kraft-dark)" stroke-width="18" stroke-dasharray="4 14"/>
-            <circle class="piece" data-from-scale="0" data-pos="0.22" data-origin="50% 50%" cx="400" cy="400" r="240" fill="var(--red)"/>
-            <circle class="piece" data-from-scale="0" data-pos="0.3" data-origin="50% 50%" cx="400" cy="400" r="210" fill="var(--mustard-light)" opacity="0.92"/>
-            <g id="cheeseBlobs"></g>
-            <g id="pepperoni"></g>
+            <clipPath id="pizzaCheeseClip"><circle cx="400" cy="400" r="284"/></clipPath>
+            <g class="piece" data-from-scale="0" data-pos="0.2" data-duration="0.2" data-origin="50% 50%">
+              <g clip-path="url(#pizzaCheeseClip)">
+                <image href="assets/photos/pizza/pizza-top.jpg" x="116" y="116" width="568" height="568" preserveAspectRatio="xMidYMid slice"/>
+              </g>
+            </g>
             <g id="pizzaHerbs"></g>
           </g>
         </svg>
       </div>
     </div>
+    <div class="section-wipe wipe-in wipe-ember" aria-hidden="true"><span>FIRINDAN ÇIKIYOR</span></div>
   </section>
 
   <!-- ============ BURGER ============ -->
@@ -290,25 +358,48 @@
     <div class="item-inner">
       <div class="item-illustration">
         <svg viewBox="0 0 700 900" id="burgerSvg" class="assemble-svg" aria-label="Katman katman istiflenen burger illüstrasyonu">
+          <!-- Every layer keeps its original hand-tuned silhouette as a
+               clipPath (same "real texture, controlled geometry" approach
+               as the döner cone / pizza) and gets a real cropped/
+               background-removed photo underneath instead of a flat vector
+               fill. Cheese and pickles stay vector: cheese is already
+               near-flat-colored in real life so the swap wasn't worth a
+               separate photo search, and pickles are a small scattered
+               JS-drawn detail (#pickleParticles below). -->
+          <clipPath id="bottomBunClip"><path d="M180 780 Q350 810 520 780 L520 730 Q350 755 180 730 Z"/></clipPath>
+          <clipPath id="lettuceClip"><polygon points="165,735 190,700 210,738 235,695 260,740 285,698 310,738 300,750 175,750"/></clipPath>
+          <clipPath id="tomatoClip"><ellipse cx="430" cy="712" rx="115" ry="18"/></clipPath>
+          <clipPath id="pattyClip"><path d="M175 700 Q350 725 525 700 Q525 665 505 655 Q350 675 195 655 Q175 665 175 700Z"/></clipPath>
+          <clipPath id="onionClip1"><ellipse cx="270" cy="625" rx="34" ry="10"/></clipPath>
+          <clipPath id="onionClip2"><ellipse cx="340" cy="620" rx="34" ry="10"/></clipPath>
+          <clipPath id="topBunClip"><path d="M175 610 Q195 480 350 468 Q505 480 525 610 Q350 640 175 610Z"/></clipPath>
           <!-- bottom bun -->
           <g class="piece" data-from-y="480" data-pos="0" data-origin="50% 100%">
-            <path d="M180 780 Q350 810 520 780 L520 730 Q350 755 180 730 Z" fill="var(--kraft)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+            <g clip-path="url(#bottomBunClip)">
+              <image href="assets/photos/burger/bun-top.png" x="150" y="700" width="400" height="130" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <path d="M180 780 Q350 810 520 780 L520 730 Q350 755 180 730 Z" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
           </g>
           <!-- lettuce -->
           <g class="piece" data-from-x="-540" data-from-rot="-30" data-pos="0.1" data-origin="50% 100%">
-            <polygon points="165,735 190,700 210,738 235,695 260,740 285,698 310,738 300,750 175,750" fill="var(--green)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
+            <g clip-path="url(#lettuceClip)">
+              <image href="assets/photos/burger/lettuce.png" x="150" y="670" width="175" height="100" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <polygon points="165,735 190,700 210,738 235,695 260,740 285,698 310,738 300,750 175,750" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
           </g>
           <!-- tomato -->
           <g class="piece" data-from-x="540" data-from-rot="30" data-pos="0.18" data-origin="50% 100%">
-            <ellipse cx="430" cy="712" rx="115" ry="18" fill="var(--red)" stroke="var(--ink)" stroke-width="5"/>
-            <circle cx="390" cy="710" r="3" fill="#F4E9D8"/><circle cx="430" cy="708" r="3" fill="#F4E9D8"/><circle cx="470" cy="712" r="3" fill="#F4E9D8"/>
+            <g clip-path="url(#tomatoClip)">
+              <image href="assets/photos/burger/tomato.png" x="305" y="674" width="250" height="76" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <ellipse cx="430" cy="712" rx="115" ry="18" fill="none" stroke="var(--ink)" stroke-width="5"/>
           </g>
           <!-- patty -->
           <g class="piece" data-from-x="-500" data-from-rot="-25" data-pos="0.28" data-origin="50% 100%">
-            <path d="M175 700 Q350 725 525 700 Q525 665 505 655 Q350 675 195 655 Q175 665 175 700Z" fill="var(--brown)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
-            <line x1="220" y1="670" x2="250" y2="690" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
-            <line x1="280" y1="665" x2="310" y2="685" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
-            <line x1="400" y1="663" x2="430" y2="683" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+            <g clip-path="url(#pattyClip)">
+              <image href="assets/photos/burger/patty.png" x="165" y="645" width="370" height="65" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <path d="M175 700 Q350 725 525 700 Q525 665 505 655 Q350 675 195 655 Q175 665 175 700Z" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
           </g>
           <!-- cheese -->
           <g class="piece" data-from-y="-460" data-from-rot="14" data-pos="0.38" data-origin="50% 50%">
@@ -316,25 +407,35 @@
           </g>
           <!-- onion rings -->
           <g class="piece" data-from-x="520" data-pos="0.46" data-origin="50% 100%">
-            <ellipse cx="270" cy="625" rx="34" ry="10" fill="none" stroke="#E9D9C2" stroke-width="6"/>
-            <ellipse cx="340" cy="620" rx="34" ry="10" fill="none" stroke="#E9D9C2" stroke-width="6"/>
+            <g clip-path="url(#onionClip1)">
+              <image href="assets/photos/burger/onion.png" x="236" y="615" width="68" height="20" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <g clip-path="url(#onionClip2)">
+              <image href="assets/photos/burger/onion.png" x="306" y="610" width="68" height="20" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <ellipse cx="270" cy="625" rx="34" ry="10" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+            <ellipse cx="340" cy="620" rx="34" ry="10" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
           </g>
           <!-- pickles -->
           <g id="pickleParticles"></g>
           <!-- top bun -->
           <g class="piece" data-from-y="-620" data-pos="0.6" data-origin="50% 0%">
-            <path d="M175 610 Q195 480 350 468 Q505 480 525 610 Q350 640 175 610Z" fill="var(--kraft-light)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+            <g clip-path="url(#topBunClip)">
+              <image href="assets/photos/burger/bun-top.png" x="150" y="460" width="400" height="185" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <path d="M175 610 Q195 480 350 468 Q505 480 525 610 Q350 640 175 610Z" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
           </g>
           <g id="sesameParticles"></g>
         </svg>
       </div>
       <div class="item-text">
         <span class="item-num">04</span>
-        <h2 class="display-lg">KAT KAT<br><span class="accent-text">DOYURUCU</span></h2>
+        <div class="text-reveal"><h2 class="display-lg">KAT KAT<br><span class="accent-text">DOYURUCU</span></h2></div>
         <p>Her katman özenle üst üste konur. Son dokunuş susamlı ekmekle tamamlanır.</p>
         <span class="fun-chip piece" data-from-y="60" data-pos="0.92">6 Katlı Doyum</span>
       </div>
     </div>
+    <div class="section-wipe wipe-in wipe-kraft" aria-hidden="true"><span>KAT KAT GELİYOR</span></div>
   </section>
 
   <!-- ============ KOLA ============ -->
@@ -342,7 +443,7 @@
     <div class="item-inner">
       <div class="item-text">
         <span class="item-num">05</span>
-        <h2 class="display-lg">SERİNLETEN<br><span class="accent-text">YUDUM</span></h2>
+        <div class="text-reveal"><h2 class="display-lg">SERİNLETEN<br><span class="accent-text">YUDUM</span></h2></div>
         <p>Buzu, köpüğü ve o tanıdık ferahlığıyla; her siparişin yanında hazır.</p>
         <span class="fun-chip piece" data-from-y="60" data-pos="0.94">Buz Gibi Servis</span>
       </div>
@@ -352,23 +453,36 @@
             <clipPath id="cupClip">
               <path d="M165 250 L335 250 L305 760 Q250 780 195 760 Z"/>
             </clipPath>
+            <clipPath id="strawClip"><rect x="228" y="120" width="26" height="380" rx="10" transform="rotate(-10 241 500)"/></clipPath>
           </defs>
+          <!-- real frosted plastic cup photo (Unsplash, Kevin Lehtla) inside
+               the same trapezoid clip the vector cup used — döner/pizza's
+               "real texture, controlled geometry" approach again. Cheese-
+               style call: the red liquid fill stays the brand color, not a
+               photographed cola texture. -->
           <g class="piece" data-from-y="380" data-pos="0" data-origin="50% 100%">
-            <path d="M165 250 L335 250 L305 760 Q250 780 195 760 Z" fill="var(--surface-2)" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+            <g clip-path="url(#cupClip)">
+              <image href="assets/photos/kola/cup.png" x="150" y="250" width="200" height="530" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <path d="M165 250 L335 250 L305 760 Q250 780 195 760 Z" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
           </g>
-          <rect id="kolaFill" x="150" y="760" width="200" height="0" fill="var(--red)" clip-path="url(#cupClip)"/>
+          <rect id="kolaFill" x="150" y="760" width="200" height="0" fill="var(--red)" clip-path="url(#cupClip)" opacity="0.88"/>
           <g id="bubbleGroup" clip-path="url(#cupClip)"></g>
           <g id="iceGroup"></g>
           <path class="piece" data-type="flap" data-from-rot="0" data-pos="0" d="M155 250 L345 250 L335 275 L165 275Z" fill="var(--steel)" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/>
-          <!-- straw -->
+          <!-- straw: real photo (same cup shot), sliced into the original
+               thin rounded-rect silhouette -->
           <g class="piece" data-from-x="260" data-from-y="-260" data-from-rot="18" data-pos="0.55" data-origin="50% 100%">
-            <rect x="228" y="120" width="26" height="380" rx="10" fill="var(--mustard)" stroke="var(--ink)" stroke-width="5" transform="rotate(-10 241 500)"/>
-            <rect x="228" y="120" width="26" height="380" rx="10" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 14" opacity="0.5" transform="rotate(-10 241 500)"/>
+            <g clip-path="url(#strawClip)">
+              <image href="assets/photos/kola/straw.png" x="212" y="120" width="60" height="380" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <rect x="228" y="120" width="26" height="380" rx="10" fill="none" stroke="var(--ink)" stroke-width="2.5" transform="rotate(-10 241 500)"/>
           </g>
           <g id="dropletParticles"></g>
         </svg>
       </div>
     </div>
+    <div class="section-wipe wipe-in wipe-teal" aria-hidden="true"><span>SERİNLEME VAKTİ</span></div>
   </section>
 
   <!-- ============ MENU ============ -->
@@ -530,7 +644,7 @@
       <a href="#menu">Menü</a>
       <a href="#iletisim">İletişim</a>
     </nav>
-    <p class="footer-note">© 2026 Sokak Ustası — örnek içeriktir <span class="ph">[PLACEHOLDER]</span>. Tüm görseller CSS/SVG ile çizilmiştir, fotoğraf kullanılmamıştır.</p>
+    <p class="footer-note">© 2026 Sokak Ustası — örnek içeriktir <span class="ph">[PLACEHOLDER]</span>. Görseller çoğunlukla CSS/SVG ile çizilmiştir; döner fotoğrafı Unsplash Lisansı ile kullanılmıştır (Kürşad Ç.), gerçek işletme fotoğrafıyla değiştirilmelidir.</p>
   </div>
 </footer>
 
